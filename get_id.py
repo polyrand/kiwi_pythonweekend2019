@@ -2,14 +2,17 @@
 
 from requests_html import HTMLSession
 from redis_funcs import get_location_from_redis, add_location_to_redis
+import json
 
 
 def get_id(city: str) -> int:
 
     result = get_location_from_redis(city=city)
 
+    payload = None
+
     if result:
-        # print("GOT int FROM REDIS")
+        print("GOT id FROM REDIS")
         # print(result)
         return result
     else:
@@ -24,9 +27,13 @@ def get_id(city: str) -> int:
             if c["name"] == city:
                 payload = c["id"]
 
-        add_location_to_redis(city=city, payload=payload)
+        if payload:
+            add_location_to_redis(city=city, payload=payload)
 
-        return payload
+            print("Had to re-fetch id")
+            return payload
+        else:
+            return
 
 
 # a = itertools.takewhile(lambda x: x["name"] == "Brno", all_cities)

@@ -1,0 +1,75 @@
+<html>
+
+<head>
+    <title>BCN PY WKND</title>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vuejs-datepicker"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/Chalarangelo/mini.css/v3.0.1/dist/mini-default.min.css">
+</head>
+
+<body>
+    <h1>Welcome to Barcelona Python Weekend!</h1>
+    {% raw %}
+    <div id="app">
+        <form>
+            <div class="row">
+                <label for="departure">Departure</label>
+                <datepicker v-model="searchForm.departure"></datepicker>
+                <label for="return">Return</label>
+                <datepicker v-model="searchForm.return"></datepicker>
+                <label for="from">From</label>
+                <input type="text" v-model="searchForm.from" placeholder="From" />
+                <label for="from">To</label>
+                <input type="text" v-model="searchForm.to" placeholder="To" />
+                <button @click.prevent="search">Search</button>
+            </div>
+        </form>
+        <div v-if="loading">
+            <img src="http://www.nps.tours/public/images/activity/loading.gif" alt="loading">
+        </div>
+        <div v-else class="row">
+            <ul>
+                <li v-for="result in searchResults" :key="result.departure">
+                    {{ result.from }} -> {{ result.to }}, {{ result.departure }} -> {{ result.return }},
+                    ${{ result.price }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    {% endraw %}
+</body>
+
+<script>
+    const app = new Vue({
+        el: '#app',
+        data: {
+            loading: false,
+            searchForm: {
+                departure: new Date(2019, 9, 16),
+                return: new Date(2096, 9, 16),
+                from: '',
+                to: ''
+            },
+            searchResults: []
+        },
+        components: {
+            'datepicker': vuejsDatepicker
+        },
+        methods: {
+            search() {
+                this.loading = true
+                setTimeout(() => {
+                    axios
+                        .get('/search', { params: this.searchForm })
+                        .then(resp => {
+                            this.searchResults = resp.data.results
+                            this.loading = false
+                        })
+                }, 2000);
+            }
+        },
+    })
+</script>
+
+</html>

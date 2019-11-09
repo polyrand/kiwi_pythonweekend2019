@@ -5,8 +5,10 @@ from redis_funcs import get_journey_from_redis, add_journey_to_redis
 from requests_html import HTMLSession, Element
 
 import datetime
-from functools import partial
+
+# from functools import partial
 import re
+import json
 
 
 def parse_date(date_string: str) -> str:
@@ -65,7 +67,7 @@ def get_rides(source_city: str, dst_city: str, date: str) -> str:
 
     if result:
         print("GOT RESULT FROM REDIS")
-        print(result)
+        # print(result)
         return result
 
     else:
@@ -75,7 +77,6 @@ def get_rides(source_city: str, dst_city: str, date: str) -> str:
         )
 
         container = r.html.find("#results-group-container-direct")
-
         if len(container) > 0:
             container = container[0]
 
@@ -88,12 +89,14 @@ def get_rides(source_city: str, dst_city: str, date: str) -> str:
                 source=source_city,
                 destination=dst_city,
                 dep_date=date,
-                payload=str(payload),
+                payload=payload,
             )
 
-            print(payload)
-            return str(payload)
+            print("Had to re-fetch")
+            # print(payload)
+            return payload
         else:
+            print("NONE")
             return ""
 
 

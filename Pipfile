@@ -19,6 +19,9 @@ more-itertools = "*"
 toolz = "*"
 redis = "*"
 python-slugify = "*"
+fastapi = {extras = ["all"],version = "*"}
+flask = "*"
+python-dateutil = "*"
 
 [requires]
 python_version = "3.7"

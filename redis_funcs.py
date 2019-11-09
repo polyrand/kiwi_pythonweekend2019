@@ -29,6 +29,7 @@ def get_location_from_redis(city: str) -> Union[None, int]:
     value = redis.get(key)
     if value:
         result = value.decode("utf-8")
+
         # print(result)
         # print(type(result))
         # print(int(result))
@@ -50,7 +51,7 @@ def get_journey_from_redis(
     key = f"bcn_{initials}:journey:{source}_{destination}_{dep_date}_{carrier}"
     value = redis.get(key)
     if value:
-        return value.decode("utf-8")
+        return json.load(value.decode("utf-8"))
     else:
         return None
 
