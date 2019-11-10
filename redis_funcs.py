@@ -51,7 +51,7 @@ def get_journey_from_redis(
     key = f"bcn_{initials}:journey:{source}_{destination}_{dep_date}_{carrier}"
     value = redis.get(key)
     if value:
-        return json.load(value.decode("utf-8"))
+        return json.loads(value)
     else:
         return None
 
